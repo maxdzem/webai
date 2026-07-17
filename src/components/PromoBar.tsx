@@ -110,7 +110,7 @@ export function PromoBar() {
 
       <button
         onClick={openLogin}
-        className="hidden shrink-0 rounded-md border border-white/30 px-2.5 py-0.5 text-xs font-medium transition hover:bg-white/15 sm:inline-block"
+        className="shrink-0 rounded-md border border-white/30 bg-white/10 px-2.5 py-0.5 text-xs font-medium transition hover:bg-white/20"
       >
         Log in
       </button>

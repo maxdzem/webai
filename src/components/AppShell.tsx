@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Footer } from "@/components/Footer";
 import { SearchTrigger } from "@/components/CommandPalette";
 import { PromoBar } from "@/components/PromoBar";
+import { LoginModal } from "@/components/LoginModal";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <PromoBar />
+      <LoginModal />
 
       <div className="flex">
         {/* desktop sidebar — sticky column */}

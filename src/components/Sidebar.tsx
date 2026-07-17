@@ -34,6 +34,7 @@ const GithubIcon = (p: IP) => (
   </svg>
 );
 const SearchIcon = svg(<><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></>);
+const UserIcon = svg(<><circle cx="12" cy="8" r="4" /><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" /></>);
 
 /* ---------------- nav config ---------------- */
 const EXPLORE = [
@@ -106,6 +107,16 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         external
         onNavigate={onNavigate}
       />
+      <button
+        onClick={() => {
+          onNavigate?.();
+          window.dispatchEvent(new CustomEvent("mw:login"));
+        }}
+        className="group flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted transition hover:bg-white/[0.04] hover:text-foreground"
+      >
+        <UserIcon className="text-white/45 group-hover:text-foreground" />
+        <span className="flex-1 text-left">Log in</span>
+      </button>
 
       {/* bottom promo card */}
       <div className="mt-auto pt-4">

@@ -1,82 +1,39 @@
-# webai
+# Motion Web
 
-**An open, community-driven library of high-quality AI prompts.** Search,
-copy, remix and contribute — every prompt released under an open license
-(CC0 / MIT / CC-BY). No paywall, no scraping, no lock-in.
+Маркетплейс анимированных шаблонов и AI-промптов: дизайн и логика в духе современных сайтов + ⌘K-поиск в стиле 21st.dev. Freemium-модель: Free / Unlimited ($19/мес).
 
-Built with Next.js 16 (App Router), TypeScript and Tailwind CSS v4.
+Весь контент (промпты и анимации) — **оригинальный**, под открытой лицензией. Ничего не спарсено и не скопировано из платных/закрытых источников.
 
----
-
-## Features
-
-- ⌘K **command-palette search** — instant, keyboard-first prompt search (also `/` to open)
-- 🧩 **Prompt directory** — filter by category and tags, sort by popular / newest
-- 📄 **Prompt detail pages** — one-click copy, license info, recommended models, related prompts
-- 🔐 **Auth UI** — email + GitHub/Google OAuth scaffold (sign in / sign up)
-- ✍️ **Submit flow** — contribute prompts under an explicit open license
-- 🎨 Original dark design system, fully responsive
-
-## Getting started
+## Запуск
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:3000
 ```
 
-Open http://localhost:3000.
+## Контент
 
-```bash
-npm run build   # production build
-npm start       # serve the production build
-npm run lint    # eslint
-```
+- **24 оригинальных промпта** — в `prisma/prompts.mjs` (по одному под каждый шаблон, CC0). Правишь их там и запускаешь `npm run db:seed` — БД обновится (upsert обновляет и существующие строки).
+- **Живые превью** — оригинальные CSS-анимации (`src/lib/previews.ts` + `src/components/AnimatedPreview.tsx`), 14 видов. Карта «шаблон → тип анимации» в `previews.ts`.
+- **⌘K поиск** — `src/components/CommandPalette.tsx`, глобальный по всем страницам.
 
-## Project structure
+Добавить новый шаблон: допиши его в `prisma/seed.mjs`, промпт — в `prisma/prompts.mjs`, затем `npm run db:seed`.
 
-```
-src/
-  app/
-    page.tsx                # landing (hero + categories + featured)
-    prompts/page.tsx        # explore / search / filter
-    prompts/[slug]/page.tsx # prompt detail + copy
-    sign-in, sign-up/       # auth UI
-    submit/                 # contribute a prompt
-    licensing/              # how the open model works
-  components/               # navbar, footer, command palette, cards, auth form
-  lib/prompts.ts            # data model + seed library + search
-```
+Опциональные поля в таблице `Template` (Prisma Studio: `npx prisma studio`):
+- **previewVideo** — URL видео-превью (заменит CSS-анимацию, если задан).
+- **animationCode** — HTML/embed живой анимации на странице шаблона.
+- **tier** — `FREE` / `PREMIUM` (премиум-промпт скрыт за подпиской).
+- **featured** — показывать во вкладке Featured.
 
-## Data
+## Подписка и оплата
 
-Prompts live in [`src/lib/prompts.ts`](src/lib/prompts.ts) as typed objects.
-Swap this for a database (Postgres/Supabase) or a headless CMS when you're
-ready — the UI only depends on the `Prompt` type and the `searchPrompts()`
-helper.
+Сейчас «Go Unlimited» в дев-режиме мгновенно апгрейдит аккаунт (для тестов). Для реальных платежей:
+1. Заполни `STRIPE_SECRET_KEY` и price ID в `.env`.
+2. Допиши Stripe Checkout в `src/app/api/upgrade/route.ts`.
+3. Апгрейд плана делай из Stripe-вебхука.
 
-## Auth (wiring it up)
+## Стек
 
-The sign-in / sign-up / submit forms are front-end scaffolds. To make them
-live, connect a provider:
+Next.js 16 (App Router) · Tailwind CSS 4 · Prisma + SQLite · NextAuth v5 (email+пароль, JWT) · bcrypt
 
-- **NextAuth (Auth.js)** — GitHub + Google + email in a few files
-- **Supabase Auth** — pairs well if you also use Supabase for the prompt DB
-- **Clerk** — fastest drop-in if you want managed auth
-
-Add credentials to `.env.local` and replace the `onSubmit` handlers in
-`src/components/auth-form.tsx`.
-
-## Licensing & contribution policy
-
-webai only hosts prompts contributors are free to share — original work or
-already-open content. We **do not** host prompts copied from paid vaults,
-closed marketplaces, or anything obtained by circumventing another service's
-access controls. This is what keeps the library both free *and* defensible.
-See the in-app `/licensing` page.
-
-The webai source code is released under the MIT License.
-
----
-
-> `requirements.txt` in the repo root is a leftover from an earlier Django
-> prototype and is not used by this project — safe to delete.
+Для продакшена: смени SQLite на Postgres (одна строка в `prisma/schema.prisma` + `DATABASE_URL`), задеплой на Vercel/Railway.

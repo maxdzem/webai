@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String?
+  passwordHash     String
+  plan             String   @default("FREE") // FREE | UNLIMITED
+  stripeCustomerId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Template {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  description   String   @default("")
+  category      String // landing | hero | portfolio | saas | ecommerce | web3 | background | section | app
+  tags          String   @default("") // comma-separated
+  tier          String   @default("FREE") // FREE | PREMIUM
+  featured      Boolean  @default(false)
+  views         Int      @default(0)
+  // ---- YOU FILL THESE IN LATER ----
+  prompt        String   @default("") // the copy-paste AI prompt (left empty on purpose)
+  animationCode String   @default("") // embed/animation code (left empty on purpose)
+  previewVideo  String   @default("") // URL to preview video/gif (left empty on purpose)
+  // gradient used as visual placeholder until previewVideo is set
+  gradient      String   @default("linear-gradient(135deg,#6d28d9,#2563eb)")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

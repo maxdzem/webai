@@ -50,19 +50,6 @@ export function Gallery({ templates }: { templates: TemplateItem[] }) {
     if (c) setCategory(c);
   }, [searchParams]);
 
-  // "/" focuses search — like 21st.dev
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "/" && document.activeElement?.tagName !== "INPUT") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-      if (e.key === "Escape") inputRef.current?.blur();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     let list = templates.filter((t) => {

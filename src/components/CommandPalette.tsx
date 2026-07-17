@@ -55,6 +55,11 @@ export function CommandPaletteProvider({
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setOpen((o) => !o);
+        return;
+      }
+      if (e.key === "/" && !isTypingTarget(e.target)) {
+        e.preventDefault();
+        setOpen(true);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -69,6 +74,12 @@ export function CommandPaletteProvider({
       {open && <Palette templates={templates} onClose={() => setOpen(false)} />}
     </PaletteCtx.Provider>
   );
+}
+
+function isTypingTarget(t: EventTarget | null) {
+  const el = t as HTMLElement | null;
+  if (!el) return false;
+  return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable;
 }
 
 type Row =

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { AppShell } from "@/components/AppShell";
 import { CommandPaletteProvider } from "@/components/CommandPalette";
 import { PALETTE_ITEMS } from "@/lib/templates";
 
@@ -31,9 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CommandPaletteProvider templates={PALETTE_ITEMS}>
-          <Navbar />
-          <main className="min-h-[70vh]">{children}</main>
-          <Footer />
+          <AppShell>{children}</AppShell>
         </CommandPaletteProvider>
       </body>
     </html>

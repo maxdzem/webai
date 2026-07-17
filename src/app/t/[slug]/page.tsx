@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { CopyButton } from "@/components/CopyButton";
 import { AnimatedPreview } from "@/components/AnimatedPreview";
 import { animKind } from "@/lib/previews";
+import { getTemplate, relatedTemplates, TEMPLATES } from "@/lib/templates";
 
-export const dynamic = "force-dynamic";
+export function generateStaticParams() {
+  return TEMPLATES.map((t) => ({ slug: t.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -15,10 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const t = await prisma.template.findUnique({
-    where: { slug },
-    select: { title: true, description: true },
-  });
+  const t = getTemplate(slug);
   if (!t) return { title: "Template not found" };
   const title = `${t.title} — animated template & AI prompt`;
   const description =
@@ -37,24 +35,10 @@ export default async function TemplatePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const template = await prisma.template.findUnique({ where: { slug } });
+  const template = getTemplate(slug);
   if (!template) notFound();
 
-  // count a view (fire-and-forget semantics are fine here)
-  await prisma.template.update({
-    where: { id: template.id },
-    data: { views: { increment: 1 } },
-  });
-
-  const session = await auth();
-  const plan = session?.user?.plan ?? "FREE";
-  const locked = template.tier === "PREMIUM" && plan !== "UNLIMITED";
-
-  const related = await prisma.template.findMany({
-    where: { category: template.category, slug: { not: template.slug } },
-    orderBy: { views: "desc" },
-    take: 3,
-  });
+  const related = relatedTemplates(template.slug, template.category);
 
   return (
     <div className="container-x py-10">
@@ -139,38 +123,14 @@ export default async function TemplatePage({
               AI Prompt
             </h2>
 
-            {locked ? (
+            <div className="mt-4">
+              <pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded-xl bg-surface-2 p-4 font-mono text-sm text-white/85">
+                {template.prompt}
+              </pre>
               <div className="mt-4">
-                <div className="select-none rounded-xl bg-surface-2 p-4 font-mono text-sm text-muted blur-[6px]">
-                  This premium prompt is hidden. Upgrade to Unlimited to copy every
-                  premium prompt on Motion Web instantly…
-                </div>
-                <div className="mt-4 flex flex-col gap-2">
-                  <Link href="/pricing" className="btn-primary justify-center">
-                    🔓 Go Unlimited to unlock
-                  </Link>
-                  {!session && (
-                    <Link href="/login" className="btn-ghost justify-center text-sm">
-                      Already subscribed? Log in
-                    </Link>
-                  )}
-                </div>
+                <CopyButton text={template.prompt} />
               </div>
-            ) : template.prompt ? (
-              <div className="mt-4">
-                <pre className="max-h-64 overflow-auto whitespace-pre-wrap rounded-xl bg-surface-2 p-4 font-mono text-sm text-white/85">
-                  {template.prompt}
-                </pre>
-                <div className="mt-4">
-                  <CopyButton text={template.prompt} />
-                </div>
-              </div>
-            ) : (
-              <div className="mt-4 rounded-xl border border-dashed border-white/15 p-4 text-sm text-muted">
-                Prompt slot — fill the <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-xs">prompt</code> field
-                for this template and the copy button appears automatically.
-              </div>
-            )}
+            </div>
           </div>
         </aside>
       </div>

@@ -24,11 +24,11 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="mb-3 text-sm font-semibold">Product</h4>
+          <h4 className="mb-3 text-sm font-semibold">More</h4>
           <ul className="space-y-2 text-sm text-muted">
-            <li><Link href="/pricing" className="hover:text-foreground">Pricing</Link></li>
-            <li><Link href="/register" className="hover:text-foreground">Create account</Link></li>
-            <li><Link href="/login" className="hover:text-foreground">Log in</Link></li>
+            <li><Link href="/?category=portfolio" className="hover:text-foreground">Portfolios</Link></li>
+            <li><Link href="/?category=web3" className="hover:text-foreground">Web3</Link></li>
+            <li><a href="https://github.com/maxdzem/webai" target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a></li>
           </ul>
         </div>
       </div>

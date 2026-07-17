@@ -1,12 +1,7 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { SignOutButton } from "@/components/SignOutButton";
 import { SearchTrigger, CommandPaletteHint } from "@/components/CommandPalette";
 
-export async function Navbar() {
-  const session = await auth();
-  const plan = session?.user?.plan ?? "FREE";
-
+export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/8 bg-[#07070b]/80 backdrop-blur-xl">
       <div className="container-x flex h-16 items-center justify-between gap-4">
@@ -23,41 +18,23 @@ export async function Navbar() {
             </Link>
             <Link href="/?category=section" className="transition hover:text-foreground">Sections</Link>
             <Link href="/?category=background" className="transition hover:text-foreground">Backgrounds</Link>
-            <Link href="/pricing" className="transition hover:text-foreground">Pricing</Link>
           </nav>
         </div>
 
         <div className="flex items-center gap-3">
           <SearchTrigger className="hidden w-44 lg:flex" />
           <CommandPaletteHint />
-          {session?.user ? (
-            <>
-              {plan !== "UNLIMITED" && (
-                <Link href="/pricing" className="btn-primary hidden !py-2 text-sm sm:inline-flex">
-                  Go Unlimited
-                </Link>
-              )}
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 rounded-full border border-white/12 py-1.5 pl-1.5 pr-3 text-sm transition hover:bg-white/5"
-              >
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 text-xs font-bold text-white">
-                  {(session.user.name ?? session.user.email ?? "U").slice(0, 1).toUpperCase()}
-                </span>
-                <span className="hidden sm:inline">{session.user.name ?? "Account"}</span>
-              </Link>
-              <SignOutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="text-sm text-muted transition hover:text-foreground">
-                Log in
-              </Link>
-              <Link href="/register" className="btn-primary !py-2 text-sm">
-                Get started
-              </Link>
-            </>
-          )}
+          <a
+            href="https://github.com/maxdzem/webai"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden text-sm text-muted transition hover:text-foreground sm:inline"
+          >
+            GitHub
+          </a>
+          <Link href="/#gallery" className="btn-primary !py-2 text-sm">
+            Get started
+          </Link>
         </div>
       </div>
     </header>

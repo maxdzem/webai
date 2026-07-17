@@ -1,25 +1,10 @@
 import { Suspense } from "react";
-import { prisma } from "@/lib/db";
-import { Gallery, TemplateItem } from "@/components/Gallery";
+import { Gallery } from "@/components/Gallery";
 import { CtaBanner } from "@/components/CtaBanner";
+import { getAllTemplates } from "@/lib/templates";
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const rows = await prisma.template.findMany({ orderBy: { createdAt: "desc" } });
-  const templates: TemplateItem[] = rows.map((t) => ({
-    id: t.id,
-    slug: t.slug,
-    title: t.title,
-    description: t.description,
-    category: t.category,
-    tags: t.tags,
-    tier: t.tier,
-    featured: t.featured,
-    views: t.views,
-    gradient: t.gradient,
-    createdAt: t.createdAt.toISOString(),
-  }));
+export default function Home() {
+  const templates = getAllTemplates();
 
   return (
     <div className="relative">

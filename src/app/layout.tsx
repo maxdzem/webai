@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CommandPaletteProvider } from "@/components/CommandPalette";
-import { prisma } from "@/lib/db";
+import { PALETTE_ITEMS } from "@/lib/templates";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,20 +22,15 @@ export const metadata: Metadata = {
     "Build beautiful animated landing pages in minutes with ready-to-use prompts and templates. Just copy, paste, and launch.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const rows = await prisma.template.findMany({
-    select: { slug: true, title: true, category: true, tags: true, tier: true },
-    orderBy: { views: "desc" },
-  });
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CommandPaletteProvider templates={rows}>
+        <CommandPaletteProvider templates={PALETTE_ITEMS}>
           <Navbar />
           <main className="min-h-[70vh]">{children}</main>
           <Footer />
